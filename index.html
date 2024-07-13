@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Martini Glass Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <style>
+        /* Add your CSS here */
+        .chart {
+            margin: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="intro" class="chart"></div>
+    <div class="tooltip"></div>
+    <div id="covid19overview" class="chart"></div>
+    <div class="tooltip2"></div>
+    <!--div id="detail2-title"><h2>New Cases Over Time</h2></div-->
+    <div id="detail2" class="chart"></div>
+    <div id="drawVaccinationProgress" class="chart"></div>
+    <div id="vaccination_fact"></div>
+    <div id="drawSummaryAndInsightsHeader"></div>
+    <div id="main-container" class="chart">
+        <div id="card-container"></div>
+    </div>
+    <div id="explore" class="chart">
+        <div id=title_explore></div>
+        <div id="controls">
+            <!-- Dropdowns for continent and country selection -->
+            <!--select id="continent-select"-->
+                <!-- Options populated dynamically with D3.js -->
+            <!--/select>
+            <select id="country-select"-->
+                <!-- Options populated dynamically with D3.js -->
+            <!--/select!-->
+            <!-- Play button -->
+            <!--button id="play-button">Play</button-->
+        </div>
+        <div id="visualization">
+            <!-- D3.js visualization will be appended here -->
+        </div>
+        <div id="country_insights"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
