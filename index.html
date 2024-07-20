@@ -16,34 +16,46 @@
 </head>
 <body>
     <div id="intro" class="chart"></div>
-    <div class="tooltip"></div>
-    <div id="covid19overview" class="chart"></div>
-    <div class="tooltip2"></div>
-    <!--div id="detail2-title"><h2>New Cases Over Time</h2></div-->
-    <div id="detail2" class="chart"></div>
-    <div id="drawVaccinationProgress" class="chart"></div>
-    <div id="vaccination_fact"></div>
-    <div id="drawSummaryAndInsightsHeader"></div>
-    <div id="main-container" class="chart">
-        <div id="card-container"></div>
+    <div id="tabs">
+        <button class="tab active" data-section="covid19overview">COVID-19 Overview</button>
+        <button class="tab" data-section="detail2">Cases Over Time</button>
+        <button class="tab" data-section="drawVaccinationProgress">Vaccination Progress</button>
+        <button class="tab" data-section="vaccination_fact">Vaccination Facts</button>
+        <button class="tab" data-section="card-container">Summary & Insights</button>
+        <button class="tab" data-section="explore-user">Explore</button>
     </div>
-    <div id="explore" class="chart">
-        <div id=title_explore></div>
-        <div id="controls">
-            <!-- Dropdowns for continent and country selection -->
-            <!--select id="continent-select"-->
-                <!-- Options populated dynamically with D3.js -->
-            <!--/select>
-            <select id="country-select"-->
-                <!-- Options populated dynamically with D3.js -->
-            <!--/select!-->
-            <!-- Play button -->
-            <!--button id="play-button">Play</button-->
+    <div id="navigation" style="text-align: right;">
+        <button id="prev-button" disabled>Previous</button>
+        <button id="next-button">Next</button>
+    </div>
+
+    <div id="content">
+        <div id="covid19overview" class="chart-section active">
+            <div class="tooltip"></div>
+            <div id="covid19overview" class="chart"></div>
         </div>
-        <div id="visualization">
-            <!-- D3.js visualization will be appended here -->
+        <div id="detail2" class="chart-section">
+            <div class="tooltip2"></div>
+            <div id="detail2" class="chart"></div>
         </div>
-        <div id="country_insights"></div>
+        <div id="drawVaccinationProgress" class="chart-section">
+            <div id="drawVaccinationProgress" class="chart"></div>
+        </div>
+        <div id="vaccination_fact" class="chart-section">
+            <div id="vaccination_fact"></div>
+        </div>
+        <div id="card-container" class="chart-section">
+            <div id="summaryAndInsightsHeader"></div>
+            <div id="main-container"></div>
+            <!--div id="card-container1"></div-->
+        </div>
+        <div id="emptydiv"></div>
+    </div>
+    <div id="explore-user" class="chart-section">
+        <div id="explore-user"></div>
+        <!--div id="title_explore"></div>
+        <div id="controls"></div>
+        <div id="visualization"></div-->
     </div>
     <script src="script.js"></script>
 </body>

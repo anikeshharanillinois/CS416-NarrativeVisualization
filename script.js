@@ -1,7 +1,170 @@
 // script.js
 
+d3.select(`#intro`).call(drawIntro);
+
+/**document.addEventListener('DOMContentLoaded', function () {
+    const sections = document.querySelectorAll('.chart-section');
+    let currentSection = 0;
+
+    function updateNavigation() {
+        sections.forEach((section, index) => {
+            section.classList.toggle('active', index === currentSection);
+            d3.select(`#${id}`).call(sectionDrawFunctions[index], filteredData);
+        });
+
+        document.getElementById('prev-button').disabled = currentSection === 0;
+        document.getElementById('next-button').disabled = currentSection === sections.length - 1;
+    }
+
+    document.getElementById('prev-button').addEventListener('click', function () {
+        if (currentSection > 0) {
+            currentSection--;
+            updateNavigation();
+        }
+    });
+
+    document.getElementById('next-button').addEventListener('click', function () {
+        console.log('next')
+        console.log(currentSection)
+        if (currentSection < sections.length - 1) {
+            currentSection++;
+            updateNavigation();
+        }
+    });
+
+    updateNavigation();
+
+    // Load the data
+    d3.csv('owid-covid-data.csv').then(data => {
+        // Parse the data
+        const filteredData = data.filter(d => d.continent && d.continent.trim() !== '');
+
+        filteredData.forEach(d => {
+            d.date = new Date(d.date);
+            d.iso_code = d.iso_code;
+            d.continent = d.continent;
+            d.location = d.location;
+            d.total_cases = +d.total_cases;
+            d.new_cases = +d.new_cases;
+            d.new_deaths = +d.new_deaths;
+            d.total_vaccinations = +d.total_vaccinations;
+            d.new_vaccinations = +d.new_vaccinations;
+            d.people_vaccinated = +d.people_vaccinated;
+            d.people_fully_vaccinated = +d.people_fully_vaccinated;
+        });
+
+        const sectionDrawFunctions = {
+            //'intro': drawIntro,
+            'covid19overview': covid19overview,
+            'detail2': drawDetail2,
+            'drawVaccinationProgress': drawVaccinationProgress,
+            'vaccination_fact': drawVaccinationFact,
+            'drawSummaryAndInsightsHeader': drawSummaryAndInsightsHeader,
+            'card-container': drawSummaryAndInsights,
+            'explore': drawExplore
+        };
+    });
+});**/
+
+document.addEventListener('DOMContentLoaded', function () {
+    const sections = document.querySelectorAll('.chart-section');
+    const tabs = document.querySelectorAll('.tab');
+    let currentSection = 0;
+    let covidData = null;
+
+    function updateNavigation() {
+        // Clear the content of all sections
+        // Update tab active state
+        tabs.forEach((tab, i) => {
+            if (i === currentSection) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+
+        tabs.forEach((tab, i) => {
+            if (i === currentSection) {
+                tab.style.backgroundColor = 'orange'; // Active tab color
+                tab.style.borderBottom = '2px solid #000'; // Active tab bottom border
+            } else {
+                tab.style.backgroundColor = '#f9f9f9'; // Inactive tab color
+                tab.style.borderBottom = '2px solid #000'; // Inactive tab bottom border
+            }
+        });
+
+        sections.forEach(section => {
+            while (section.firstChild) {
+                section.removeChild(section.firstChild);
+            }
+        });
+
+        // Show the current section
+        sections.forEach((section, index) => {
+            section.classList.toggle('active', index === currentSection);
+        });
+
+        // Disable buttons if at the start or end
+        document.getElementById('prev-button').disabled = currentSection === 0;
+        document.getElementById('next-button').disabled = currentSection === sections.length - 1;
+
+        // Call the draw function for the current section
+        const sectionDrawFunctions = {
+            'covid19overview': covid19overview,
+            'detail2': drawDetail2,
+            'drawVaccinationProgress': drawVaccinationProgress,
+            'vaccination_fact': drawVaccinationFact,
+            'card-container': drawSummaryAndInsights,
+            'explore-user': drawExplore
+        };
+
+        const currentSectionId = sections[currentSection].id;
+        console.log(currentSectionId)
+        if (sectionDrawFunctions[currentSectionId]) {
+            d3.select(`#${currentSectionId}`).call(sectionDrawFunctions[currentSectionId], covidData);
+        }
+    }
+
+    document.getElementById('prev-button').addEventListener('click', function () {
+        if (currentSection > 0) {
+            currentSection--;
+            updateNavigation();
+        }
+    });
+
+    document.getElementById('next-button').addEventListener('click', function () {
+        console.log(sections.length)
+        console.log(currentSection)
+        if (currentSection < sections.length - 1) {
+            currentSection++;
+            updateNavigation();
+        }
+    });
+
+    d3.csv('owid-covid-data.csv').then(data => {
+        console.log("loading data every time")
+        // Parse the data
+        covidData = data.filter(d => d.continent && d.continent.trim() !== '');
+        
+        covidData.forEach(d => {
+            d.date = new Date(d.date);
+            d.iso_code = d.iso_code;
+            d.continent = d.continent;
+            d.location = d.location;
+            d.total_cases = +d.total_cases;
+            d.new_cases = +d.new_cases;
+            d.new_deaths = +d.new_deaths;
+            d.total_vaccinations = +d.total_vaccinations;
+            d.new_vaccinations = +d.new_vaccinations;
+            d.people_vaccinated = +d.people_vaccinated;
+            d.people_fully_vaccinated = +d.people_fully_vaccinated;
+        });
+        updateNavigation();
+    });
+});
+
 // Load the data
-d3.csv('owid-covid-data.csv').then(data => {
+/**d3.csv('owid-covid-data.csv').then(data => {
     // Parse the data
     // Exclude records with iso_code equal to ''
     const filteredData = data.filter(d => d.continent && d.continent.trim() !== '');
@@ -37,9 +200,9 @@ d3.csv('owid-covid-data.csv').then(data => {
     sections.forEach(section => {
         d3.select(`#${section.id}`).call(section.draw, filteredData);
     });
-});
+});**/
 
-function drawIntro(selection, data) {
+function drawIntro(selection) {
     selection.append('h1').text('COVID-19');
     selection.append('h3').text('CS416 - Narrative Visualization');
     selection.append('h3').text('Anikesh Haran [anikesh2@illinois.edu]');
@@ -55,7 +218,7 @@ function covid19overview(selection, data) {
     const height = 600;
 
     // Append the svg object to the selection
-    selection.append('h2').text('COVID-19 - Global Overview');
+    selection.append('h2').text('COVID-19 - Global Overview - Cases & Deaths');
     selection.append("div")
     const svg = selection.append("svg")
         .attr("width", width)
@@ -83,8 +246,22 @@ function covid19overview(selection, data) {
     });
 
     // Color scale for the map
-    const colorScale = d3.scaleSequential(d3.interpolateReds)
-        .domain([0, d3.max(data, d => d.total_cases)]);
+    /*const colorScale = d3.scaleSequential(d3.interpolateReds)
+        .domain([0, d3.max(data, d => d.total_cases)]);*/
+
+    // Define a color array with 30 distinct colors by combining different D3 schemes
+    // Define a color array with 30 distinct colors by combining different D3 schemes
+    const colors = [
+        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", // schemeCategory10
+        "#393b79", "#637939", "#8c6d31", "#843c39", "#7b4173", "#a55194", "#6b6ecf", "#d6616b", "#ce6dbd", "#de9ed6", // schemePaired
+        "#9c9ede", "#ff9896", "#c5b0d5", "#c49c94", "#f7b6d2", "#dbdb8d", "#c7c7c7", "#9edae5", "#17becf", "#bcbd22"  // schemeSet3
+    ];
+
+    // Create a threshold scale with the defined colors
+    const colorScale = d3.scaleThreshold()
+        .domain(d3.range(30).map(d => d * (100000000 / 30)))  // 29 thresholds for 30 colors
+        .range(colors);
+    
 
     // Load the GeoJSON data and draw the map
     d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function(geoData) {
@@ -542,14 +719,15 @@ function getTotalPeopleFullyVaccinated(data){
     return sumFullyVaccinated
 }
 
-function drawSummaryAndInsightsHeader(selection, data) {
+/*function drawSummaryAndInsightsHeader(selection, data) {
     // Add a heading
     selection.append('h2').text('Summary and Insights');
-}
+}*/
 
 function drawSummaryAndInsights(selection, data) {
+    //d3.select("#summaryAndInsightsHeader").append('h2').text('Summary and Insights');
     // Add a heading
-    //selection.append('h2').text('Summary and Insights');
+    selection.append('h2').text('Summary and Insights');
 
     // Aggregate the global data
     let globalData = {
@@ -635,7 +813,8 @@ function drawSummaryAndInsights(selection, data) {
     ];
 
     // Select the container
-    const container = d3.select("#card-container");
+    //const container = d3.select("#card-container1");
+    const container = selection.append("div").attr("id", "card-container1");
     // Select #main-container and apply styles
     d3.select('#main-container')
         .style('width', '100%')
@@ -686,7 +865,7 @@ function drawSummaryAndInsights(selection, data) {
 
 }
 
-function drawExplore(selection, data) {
+/**function drawExplore(selection, data) {
     d3.select("#title_explore").append('h2').text('Explore the Data');
 
     // Intersection Observer setup to load the graph when the user scrolls to it
@@ -709,9 +888,203 @@ function drawExplore(selection, data) {
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
     observer.observe(document.getElementById('visualization'));
+}**/
+
+/**function drawExplore(selection, data) {
+    console.log("inside draw explore")
+    selection.append("div").attr("id", "title_explore").append('h2').text('Explore the Data');
+}*/
+
+function drawExplore(selection, data) {
+    selection.append("div").attr("id", "title_explore").append('h2').text('Explore Vaccination Progress For Country');
+    //d3.select("#title_explore").append('h2').text('Explore the Data');
+
+    // Extract unique values for countries
+    const countries = Array.from(new Set(data.map(d => d.location)));
+
+    // Create and populate country select
+    //const controlsDiv = d3.select("#controls");
+    const controlsDiv = selection.append("div").attr("id", "controls");
+
+    // Add field name
+    controlsDiv.append("label")
+        .attr("for", "country-select")
+        .text("Country");
+
+    // Create country select dropdown
+    const countrySelect = controlsDiv.append("select")
+        .attr("id", "country-select");
+
+    countrySelect.selectAll("option")
+        .data(["All"].concat(countries))
+        .enter()
+        .append("option")
+        .text(d => d);
+
+    // Variables for SVG dimensions and margins
+    const margin = { top: 20, right: 30, bottom: 50, left: 50 };
+    const width = 960 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    // Append SVG to #visualization div
+    //const svg = d3.select("#visualization")
+    const svg = selection.append("div").attr("id", "visualization")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Create scales for the line graph
+    const x = d3.scaleTime().range([0, width]);
+    const y = d3.scaleLinear().range([height, 0]);
+
+    // Create line generator
+    const line = d3.line()
+        .x(d => x(d.date))
+        .y(d => y(d.new_vaccinations));
+
+    // Create axes
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
+
+    // Append x-axis to the SVG
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .text('Date');
+
+    // Append y-axis to the SVG
+    svg.append("g")
+        .attr("class", "y axis")
+        .text('New Vaccinations');
+
+    // Append tooltip to the visualization
+    const tooltip = d3.select("#visualization")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    // Append legend to the SVG
+    const legend = svg.append("g")
+        .attr("class", "legend")
+        .style("display", "none");
+
+    legend.append("rect")
+        .attr("x", width - 150)
+        .attr("y", 10)
+        .attr("width", 140)
+        .attr("height", 50)
+        .attr("fill", "white")
+        .attr("stroke", "black");
+
+    legend.append("text")
+        .attr("class", "legend-date")
+        .attr("x", width - 140)
+        .attr("y", 30)
+        .attr("dy", ".35em");
+
+    legend.append("text")
+        .attr("class", "legend-value")
+        .attr("x", width - 140)
+        .attr("y", 50)
+        .attr("dy", ".35em");
+
+    // Function to update data and the graph based on user selection
+    function updateData() {
+        const selectedCountry = d3.select("#country-select").property("value");
+
+        const filteredData = data.filter(d => selectedCountry === "All" || d.location === selectedCountry);
+
+        // Update the scales
+        x.domain(d3.extent(filteredData, d => d.date));
+        y.domain([0, d3.max(filteredData, d => d.new_vaccinations)]);
+
+        // Update the line path
+        const path = svg.selectAll(".line")
+            .data([filteredData]);
+
+        path.enter()
+            .append("path")
+            .attr("class", "line")
+            .merge(path)
+            .transition()
+            .duration(2500)
+            .attr("d", line)
+            .attr('fill', 'none')
+            .attr('stroke', 'orange')
+            .attr('stroke-width', 1);
+
+        // Create bisector to find the closest data point
+        const bisector = d3.bisector(d => d.date).left;
+
+        // Add tooltip events
+        path.on("mouseover", function (event, d) {
+            const mouseX = d3.pointer(event)[0];
+            const index = bisector(filteredData, x.invert(mouseX));
+            const closestDataPoint = filteredData[index];
+
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", 0.9);
+            tooltip.html(`<br>Date: ${d3.timeFormat("%Y-%m-%d")(closestDataPoint.date)}<br>New Vaccinations: ${closestDataPoint.new_vaccinations}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 20) + "px");
+        })
+        .on("mouseout", function () {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
+        // Update axes
+        svg.select(".x.axis").call(xAxis);
+        svg.select(".y.axis").call(yAxis);
+    }
+
+    // Event listener for country select change
+    d3.select("#country-select").on("change", updateData);
+
+    // Initial update of data
+    updateData();
+
+    // Add brushing functionality
+    const brush = d3.brushX()
+        .extent([[0, 0], [width, height]])
+        .on("end", brushed);
+
+    svg.append("g")
+        .attr("class", "brush")
+        .call(brush);
+
+    function brushed(event) {
+        if (!event.selection) return;
+        const [x0, x1] = event.selection.map(x.invert);
+        const selectedCountry = d3.select("#country-select").property("value");
+        var filteredData = data.filter(d => selectedCountry === "All" || d.location === selectedCountry);
+        filteredData = filteredData.filter(d => d.date >= x0 && d.date <= x1);
+
+        x.domain([x0, x1]);
+        svg.select(".x.axis").call(xAxis);
+
+        const path = svg.selectAll(".line")
+            .data([filteredData]);
+
+        path.enter()
+            .append("path")
+            .attr("class", "line")
+            .merge(path)
+            .attr("d", line)
+            .attr('fill', 'none')
+            .attr('stroke', 'orange')
+            .attr('stroke-width', 1);
+
+        svg.select(".brush").call(brush.move, null); // Clear the brush after zoom
+    }
 }
 
-function loadDataAndVisualize(data) {
+/**function drawExplore2(selection, data) {
+    d3.select("#title_explore").append('h2').text('Explore the Data');
     // Parse the date and format the data
     //data.forEach(d => {
     //    d.date = new Date(d.date);
@@ -733,22 +1106,11 @@ function loadDataAndVisualize(data) {
     var countrySelect = controlsDiv.append("select")
         .attr("id", "country-select");
 
-    countrySelect.selectAll("option")
+    const a = countrySelect.selectAll("option")
         .data(["All"].concat(countries))
         .enter()
         .append("option")
         .text(d => d);
-
-    // Create and populate country select
-    /**var countrySelect = d3.select("#controls")
-        .append("select")
-        .attr("id", "country-select");
-
-    countrySelect.selectAll("option")
-        .data(["All"].concat(countries))
-        .enter()
-        .append("option")
-        .text(d => d);**/
 
     // Variables for SVG dimensions and margins
     const margin = { top: 20, right: 30, bottom: 50, left: 50 };
@@ -883,4 +1245,4 @@ function loadDataAndVisualize(data) {
 
     // Initial update of data
     updateData();
-}
+}**/
