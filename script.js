@@ -896,7 +896,7 @@ function drawSummaryAndInsights(selection, data) {
 }*/
 
 function drawExplore(selection, data) {
-    selection.append("div").attr("id", "title_explore").append('h2').text('Explore Vaccination Progress For Country');
+    selection.append("div").attr("id", "title_explore").append('h2').text('Explore Vaccination Progress');
     //d3.select("#title_explore").append('h2').text('Explore the Data');
 
     // Extract unique values for countries
